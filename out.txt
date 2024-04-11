@@ -1,0 +1,1924 @@
+Enviroment { idents: {"Y": 1, "concat": 2, "X": 3, "_": 0, "L": 6, "_a": 7, "list": 5, "_e": 11, "Z": 4, "_b": 8, "_d": 10, "_c": 9}, kinds: {10: Const, 8: Const, 0: Const, 3: Var, 11: Const, 2: Func(3), 6: Var, 7: Const, 9: Const, 1: Var, 4: Var, 5: Func(2)}, inv_idents: {10: "_d", 6: "L", 0: "_", 7: "_a", 8: "_b", 9: "_c", 11: "_e", 4: "Z", 2: "concat", 3: "X", 1: "Y", 5: "list"}, next_id: 27 }
+Substitution {
+    set: DisjointSet {
+        sets: [
+            (
+                [
+                    SetItem {
+                        item: 0,
+                        set: Cell {
+                            value: 0,
+                        },
+                    },
+                    SetItem {
+                        item: 13,
+                        set: Cell {
+                            value: 0,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 1,
+                        set: Cell {
+                            value: 1,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 2,
+                        set: Cell {
+                            value: 2,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 3,
+                        set: Cell {
+                            value: 3,
+                        },
+                    },
+                    SetItem {
+                        item: 14,
+                        set: Cell {
+                            value: 3,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 5,
+                        set: Cell {
+                            value: 5,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 6,
+                        set: Cell {
+                            value: 6,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 7,
+                        set: Cell {
+                            value: 7,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 8,
+                        set: Cell {
+                            value: 8,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 9,
+                        set: Cell {
+                            value: 9,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 10,
+                        set: Cell {
+                            value: 10,
+                        },
+                    },
+                    SetItem {
+                        item: 16,
+                        set: Cell {
+                            value: 10,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 15,
+                        set: Cell {
+                            value: 15,
+                        },
+                    },
+                    SetItem {
+                        item: 4,
+                        set: Cell {
+                            value: 15,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 17,
+                        set: Cell {
+                            value: 17,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 18,
+                        set: Cell {
+                            value: 18,
+                        },
+                    },
+                    SetItem {
+                        item: 11,
+                        set: Cell {
+                            value: 18,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 19,
+                        set: Cell {
+                            value: 19,
+                        },
+                    },
+                    SetItem {
+                        item: 12,
+                        set: Cell {
+                            value: 19,
+                        },
+                    },
+                ],
+                2,
+            ),
+        ],
+        items: [
+            Const(
+                7,
+            ),
+            Const(
+                8,
+            ),
+            Const(
+                0,
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        8,
+                    ),
+                    Const(
+                        0,
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        7,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                8,
+                            ),
+                            Const(
+                                0,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Const(
+                9,
+            ),
+            Const(
+                10,
+            ),
+            Const(
+                11,
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        11,
+                    ),
+                    Const(
+                        0,
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        10,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                11,
+                            ),
+                            Const(
+                                0,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        9,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                10,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        11,
+                                    ),
+                                    Const(
+                                        0,
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Var(
+                3,
+            ),
+            Func(
+                2,
+                [
+                    Func(
+                        5,
+                        [
+                            Const(
+                                7,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        8,
+                                    ),
+                                    Const(
+                                        0,
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                9,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        10,
+                                    ),
+                                    Func(
+                                        5,
+                                        [
+                                            Const(
+                                                11,
+                                            ),
+                                            Const(
+                                                0,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    Var(
+                        3,
+                    ),
+                ],
+            ),
+            Var(
+                13,
+            ),
+            Var(
+                14,
+            ),
+            Func(
+                5,
+                [
+                    Var(
+                        13,
+                    ),
+                    Var(
+                        14,
+                    ),
+                ],
+            ),
+            Var(
+                15,
+            ),
+            Var(
+                16,
+            ),
+            Func(
+                5,
+                [
+                    Var(
+                        13,
+                    ),
+                    Var(
+                        16,
+                    ),
+                ],
+            ),
+            Func(
+                2,
+                [
+                    Func(
+                        5,
+                        [
+                            Var(
+                                13,
+                            ),
+                            Var(
+                                14,
+                            ),
+                        ],
+                    ),
+                    Var(
+                        15,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Var(
+                                13,
+                            ),
+                            Var(
+                                16,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+        vacant: [
+            12,
+            4,
+            13,
+            14,
+            16,
+            11,
+        ],
+    },
+    items: {
+        Const(
+            0,
+        ): SetItem {
+            item: 2,
+            set: Cell {
+                value: 2,
+            },
+        },
+        Const(
+            9,
+        ): SetItem {
+            item: 5,
+            set: Cell {
+                value: 5,
+            },
+        },
+        Const(
+            10,
+        ): SetItem {
+            item: 6,
+            set: Cell {
+                value: 6,
+            },
+        },
+        Func(
+            2,
+            [
+                Func(
+                    5,
+                    [
+                        Const(
+                            7,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    8,
+                                ),
+                                Const(
+                                    0,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            9,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    10,
+                                ),
+                                Func(
+                                    5,
+                                    [
+                                        Const(
+                                            11,
+                                        ),
+                                        Const(
+                                            0,
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                Var(
+                    3,
+                ),
+            ],
+        ): SetItem {
+            item: 12,
+            set: Cell {
+                value: 19,
+            },
+        },
+        Func(
+            5,
+            [
+                Var(
+                    13,
+                ),
+                Var(
+                    14,
+                ),
+            ],
+        ): SetItem {
+            item: 15,
+            set: Cell {
+                value: 15,
+            },
+        },
+        Func(
+            5,
+            [
+                Var(
+                    13,
+                ),
+                Var(
+                    16,
+                ),
+            ],
+        ): SetItem {
+            item: 18,
+            set: Cell {
+                value: 18,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    7,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            8,
+                        ),
+                        Const(
+                            0,
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 4,
+            set: Cell {
+                value: 15,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    10,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            11,
+                        ),
+                        Const(
+                            0,
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 9,
+            set: Cell {
+                value: 9,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    9,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            10,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    11,
+                                ),
+                                Const(
+                                    0,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 10,
+            set: Cell {
+                value: 10,
+            },
+        },
+        Var(
+            3,
+        ): SetItem {
+            item: 11,
+            set: Cell {
+                value: 18,
+            },
+        },
+        Func(
+            2,
+            [
+                Func(
+                    5,
+                    [
+                        Var(
+                            13,
+                        ),
+                        Var(
+                            14,
+                        ),
+                    ],
+                ),
+                Var(
+                    15,
+                ),
+                Func(
+                    5,
+                    [
+                        Var(
+                            13,
+                        ),
+                        Var(
+                            16,
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 19,
+            set: Cell {
+                value: 19,
+            },
+        },
+        Var(
+            13,
+        ): SetItem {
+            item: 13,
+            set: Cell {
+                value: 0,
+            },
+        },
+        Const(
+            8,
+        ): SetItem {
+            item: 1,
+            set: Cell {
+                value: 1,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    11,
+                ),
+                Const(
+                    0,
+                ),
+            ],
+        ): SetItem {
+            item: 8,
+            set: Cell {
+                value: 8,
+            },
+        },
+        Var(
+            14,
+        ): SetItem {
+            item: 14,
+            set: Cell {
+                value: 3,
+            },
+        },
+        Var(
+            16,
+        ): SetItem {
+            item: 17,
+            set: Cell {
+                value: 17,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    8,
+                ),
+                Const(
+                    0,
+                ),
+            ],
+        ): SetItem {
+            item: 3,
+            set: Cell {
+                value: 3,
+            },
+        },
+        Const(
+            7,
+        ): SetItem {
+            item: 0,
+            set: Cell {
+                value: 0,
+            },
+        },
+        Const(
+            11,
+        ): SetItem {
+            item: 7,
+            set: Cell {
+                value: 7,
+            },
+        },
+        Var(
+            15,
+        ): SetItem {
+            item: 16,
+            set: Cell {
+                value: 10,
+            },
+        },
+    },
+}
+-------------------------
+Substitution {
+    set: DisjointSet {
+        sets: [
+            (
+                [
+                    SetItem {
+                        item: 0,
+                        set: Cell {
+                            value: 0,
+                        },
+                    },
+                    SetItem {
+                        item: 11,
+                        set: Cell {
+                            value: 0,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 1,
+                        set: Cell {
+                            value: 1,
+                        },
+                    },
+                    SetItem {
+                        item: 12,
+                        set: Cell {
+                            value: 1,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 3,
+                        set: Cell {
+                            value: 3,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 4,
+                        set: Cell {
+                            value: 4,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 5,
+                        set: Cell {
+                            value: 5,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 6,
+                        set: Cell {
+                            value: 6,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 7,
+                        set: Cell {
+                            value: 7,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 8,
+                        set: Cell {
+                            value: 8,
+                        },
+                    },
+                    SetItem {
+                        item: 14,
+                        set: Cell {
+                            value: 8,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 13,
+                        set: Cell {
+                            value: 13,
+                        },
+                    },
+                    SetItem {
+                        item: 2,
+                        set: Cell {
+                            value: 13,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 15,
+                        set: Cell {
+                            value: 15,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 16,
+                        set: Cell {
+                            value: 16,
+                        },
+                    },
+                    SetItem {
+                        item: 9,
+                        set: Cell {
+                            value: 16,
+                        },
+                    },
+                ],
+                2,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 17,
+                        set: Cell {
+                            value: 17,
+                        },
+                    },
+                    SetItem {
+                        item: 10,
+                        set: Cell {
+                            value: 17,
+                        },
+                    },
+                ],
+                2,
+            ),
+        ],
+        items: [
+            Const(
+                8,
+            ),
+            Const(
+                0,
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        8,
+                    ),
+                    Const(
+                        0,
+                    ),
+                ],
+            ),
+            Const(
+                9,
+            ),
+            Const(
+                10,
+            ),
+            Const(
+                11,
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        11,
+                    ),
+                    Const(
+                        0,
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        10,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                11,
+                            ),
+                            Const(
+                                0,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        9,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                10,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        11,
+                                    ),
+                                    Const(
+                                        0,
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Var(
+                16,
+            ),
+            Func(
+                2,
+                [
+                    Func(
+                        5,
+                        [
+                            Const(
+                                8,
+                            ),
+                            Const(
+                                0,
+                            ),
+                        ],
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                9,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        10,
+                                    ),
+                                    Func(
+                                        5,
+                                        [
+                                            Const(
+                                                11,
+                                            ),
+                                            Const(
+                                                0,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    Var(
+                        16,
+                    ),
+                ],
+            ),
+            Var(
+                18,
+            ),
+            Var(
+                19,
+            ),
+            Func(
+                5,
+                [
+                    Var(
+                        18,
+                    ),
+                    Var(
+                        19,
+                    ),
+                ],
+            ),
+            Var(
+                20,
+            ),
+            Var(
+                21,
+            ),
+            Func(
+                5,
+                [
+                    Var(
+                        18,
+                    ),
+                    Var(
+                        21,
+                    ),
+                ],
+            ),
+            Func(
+                2,
+                [
+                    Func(
+                        5,
+                        [
+                            Var(
+                                18,
+                            ),
+                            Var(
+                                19,
+                            ),
+                        ],
+                    ),
+                    Var(
+                        20,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Var(
+                                18,
+                            ),
+                            Var(
+                                21,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+        vacant: [
+            10,
+            2,
+            11,
+            12,
+            14,
+            9,
+        ],
+    },
+    items: {
+        Const(
+            9,
+        ): SetItem {
+            item: 3,
+            set: Cell {
+                value: 3,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    11,
+                ),
+                Const(
+                    0,
+                ),
+            ],
+        ): SetItem {
+            item: 6,
+            set: Cell {
+                value: 6,
+            },
+        },
+        Const(
+            8,
+        ): SetItem {
+            item: 0,
+            set: Cell {
+                value: 0,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    10,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            11,
+                        ),
+                        Const(
+                            0,
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 7,
+            set: Cell {
+                value: 7,
+            },
+        },
+        Const(
+            0,
+        ): SetItem {
+            item: 1,
+            set: Cell {
+                value: 1,
+            },
+        },
+        Func(
+            5,
+            [
+                Var(
+                    18,
+                ),
+                Var(
+                    19,
+                ),
+            ],
+        ): SetItem {
+            item: 13,
+            set: Cell {
+                value: 13,
+            },
+        },
+        Var(
+            16,
+        ): SetItem {
+            item: 9,
+            set: Cell {
+                value: 16,
+            },
+        },
+        Func(
+            5,
+            [
+                Var(
+                    18,
+                ),
+                Var(
+                    21,
+                ),
+            ],
+        ): SetItem {
+            item: 16,
+            set: Cell {
+                value: 16,
+            },
+        },
+        Const(
+            11,
+        ): SetItem {
+            item: 5,
+            set: Cell {
+                value: 5,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    8,
+                ),
+                Const(
+                    0,
+                ),
+            ],
+        ): SetItem {
+            item: 2,
+            set: Cell {
+                value: 13,
+            },
+        },
+        Const(
+            10,
+        ): SetItem {
+            item: 4,
+            set: Cell {
+                value: 4,
+            },
+        },
+        Func(
+            2,
+            [
+                Func(
+                    5,
+                    [
+                        Const(
+                            8,
+                        ),
+                        Const(
+                            0,
+                        ),
+                    ],
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            9,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    10,
+                                ),
+                                Func(
+                                    5,
+                                    [
+                                        Const(
+                                            11,
+                                        ),
+                                        Const(
+                                            0,
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                Var(
+                    16,
+                ),
+            ],
+        ): SetItem {
+            item: 10,
+            set: Cell {
+                value: 17,
+            },
+        },
+        Var(
+            18,
+        ): SetItem {
+            item: 11,
+            set: Cell {
+                value: 0,
+            },
+        },
+        Var(
+            19,
+        ): SetItem {
+            item: 12,
+            set: Cell {
+                value: 1,
+            },
+        },
+        Var(
+            20,
+        ): SetItem {
+            item: 14,
+            set: Cell {
+                value: 8,
+            },
+        },
+        Var(
+            21,
+        ): SetItem {
+            item: 15,
+            set: Cell {
+                value: 15,
+            },
+        },
+        Func(
+            2,
+            [
+                Func(
+                    5,
+                    [
+                        Var(
+                            18,
+                        ),
+                        Var(
+                            19,
+                        ),
+                    ],
+                ),
+                Var(
+                    20,
+                ),
+                Func(
+                    5,
+                    [
+                        Var(
+                            18,
+                        ),
+                        Var(
+                            21,
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 17,
+            set: Cell {
+                value: 17,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    9,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            10,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    11,
+                                ),
+                                Const(
+                                    0,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 8,
+            set: Cell {
+                value: 8,
+            },
+        },
+    },
+}
+-------------------------
+Substitution {
+    set: DisjointSet {
+        sets: [
+            (
+                [
+                    SetItem {
+                        item: 0,
+                        set: Cell {
+                            value: 0,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 1,
+                        set: Cell {
+                            value: 1,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 2,
+                        set: Cell {
+                            value: 2,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 3,
+                        set: Cell {
+                            value: 3,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 4,
+                        set: Cell {
+                            value: 4,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 5,
+                        set: Cell {
+                            value: 5,
+                        },
+                    },
+                ],
+                1,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 6,
+                        set: Cell {
+                            value: 6,
+                        },
+                    },
+                    SetItem {
+                        item: 9,
+                        set: Cell {
+                            value: 6,
+                        },
+                    },
+                    SetItem {
+                        item: 7,
+                        set: Cell {
+                            value: 6,
+                        },
+                    },
+                ],
+                3,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [],
+                0,
+            ),
+            (
+                [
+                    SetItem {
+                        item: 10,
+                        set: Cell {
+                            value: 10,
+                        },
+                    },
+                    SetItem {
+                        item: 8,
+                        set: Cell {
+                            value: 10,
+                        },
+                    },
+                ],
+                2,
+            ),
+        ],
+        items: [
+            Const(
+                0,
+            ),
+            Const(
+                9,
+            ),
+            Const(
+                10,
+            ),
+            Const(
+                11,
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        11,
+                    ),
+                    Const(
+                        0,
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        10,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                11,
+                            ),
+                            Const(
+                                0,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Func(
+                5,
+                [
+                    Const(
+                        9,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                10,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        11,
+                                    ),
+                                    Const(
+                                        0,
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            Var(
+                21,
+            ),
+            Func(
+                2,
+                [
+                    Const(
+                        0,
+                    ),
+                    Func(
+                        5,
+                        [
+                            Const(
+                                9,
+                            ),
+                            Func(
+                                5,
+                                [
+                                    Const(
+                                        10,
+                                    ),
+                                    Func(
+                                        5,
+                                        [
+                                            Const(
+                                                11,
+                                            ),
+                                            Const(
+                                                0,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    Var(
+                        21,
+                    ),
+                ],
+            ),
+            Var(
+                22,
+            ),
+            Func(
+                2,
+                [
+                    Const(
+                        0,
+                    ),
+                    Var(
+                        22,
+                    ),
+                    Var(
+                        22,
+                    ),
+                ],
+            ),
+        ],
+        vacant: [
+            8,
+            9,
+            7,
+        ],
+    },
+    items: {
+        Const(
+            0,
+        ): SetItem {
+            item: 0,
+            set: Cell {
+                value: 0,
+            },
+        },
+        Const(
+            10,
+        ): SetItem {
+            item: 2,
+            set: Cell {
+                value: 2,
+            },
+        },
+        Const(
+            11,
+        ): SetItem {
+            item: 3,
+            set: Cell {
+                value: 3,
+            },
+        },
+        Const(
+            9,
+        ): SetItem {
+            item: 1,
+            set: Cell {
+                value: 1,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    9,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            10,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    11,
+                                ),
+                                Const(
+                                    0,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 6,
+            set: Cell {
+                value: 6,
+            },
+        },
+        Var(
+            21,
+        ): SetItem {
+            item: 7,
+            set: Cell {
+                value: 6,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    10,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            11,
+                        ),
+                        Const(
+                            0,
+                        ),
+                    ],
+                ),
+            ],
+        ): SetItem {
+            item: 5,
+            set: Cell {
+                value: 5,
+            },
+        },
+        Func(
+            5,
+            [
+                Const(
+                    11,
+                ),
+                Const(
+                    0,
+                ),
+            ],
+        ): SetItem {
+            item: 4,
+            set: Cell {
+                value: 4,
+            },
+        },
+        Func(
+            2,
+            [
+                Const(
+                    0,
+                ),
+                Var(
+                    22,
+                ),
+                Var(
+                    22,
+                ),
+            ],
+        ): SetItem {
+            item: 10,
+            set: Cell {
+                value: 10,
+            },
+        },
+        Func(
+            2,
+            [
+                Const(
+                    0,
+                ),
+                Func(
+                    5,
+                    [
+                        Const(
+                            9,
+                        ),
+                        Func(
+                            5,
+                            [
+                                Const(
+                                    10,
+                                ),
+                                Func(
+                                    5,
+                                    [
+                                        Const(
+                                            11,
+                                        ),
+                                        Const(
+                                            0,
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                Var(
+                    21,
+                ),
+            ],
+        ): SetItem {
+            item: 8,
+            set: Cell {
+                value: 10,
+            },
+        },
+        Var(
+            22,
+        ): SetItem {
+            item: 9,
+            set: Cell {
+                value: 6,
+            },
+        },
+    },
+}
+-------------------------
+X = Func(5, [Var(13), Func(5, [Var(18), Func(5, [Const(9), Func(5, [Const(10), Func(5, [Const(11), Const(0)])])])])])
+================
