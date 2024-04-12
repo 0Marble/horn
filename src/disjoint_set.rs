@@ -1,17 +1,35 @@
 use std::{
     collections::{LinkedList, VecDeque},
+    fmt::Display,
     hash::Hash,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SetItem(usize);
 
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct DisjointSet<T> {
     classes: Vec<(LinkedList<SetItem>, usize)>,
     sets: Vec<usize>,
     items: Vec<T>,
     vacant: VecDeque<usize>,
+}
+
+impl<T> Display for DisjointSet<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for repr in self.set_representatives() {
+            write!(f, "{repr:?}\n\t")?;
+            for (s, item) in self.set_of(repr).map(|s| (s, self.get(s).unwrap())) {
+                write!(f, "{item}[{}], ", self.sets[s.0])?;
+            }
+            writeln!(f)?;
+        }
+
+        Ok(())
+    }
 }
 
 impl<T> DisjointSet<T> {
@@ -55,12 +73,12 @@ impl<T> DisjointSet<T> {
         assert!(!self.vacant.contains(&self.sets[b.0]));
         assert!(a.0 < self.items.len());
         assert!(b.0 < self.items.len());
-        if a == b {
-            return;
-        }
 
         let s = self.find(a).unwrap();
         let t = self.find(b).unwrap();
+        if s == t {
+            return;
+        }
         let s_item = &self.items[s.0];
         let t_item = &self.items[t.0];
         let repr = rule(s_item, t_item);
@@ -68,12 +86,10 @@ impl<T> DisjointSet<T> {
             (self.sets[s.0], self.sets[t.0])
         } else if repr == 2 {
             (self.sets[t.0], self.sets[a.0])
+        } else if self.classes[self.sets[s.0]].1 > self.classes[self.sets[t.0]].1 {
+            (self.sets[s.0], self.sets[t.0])
         } else {
-            if self.classes[self.sets[s.0]].1 > self.classes[self.sets[t.0]].1 {
-                (self.sets[s.0], self.sets[t.0])
-            } else {
-                (self.sets[t.0], self.sets[s.0])
-            }
+            (self.sets[t.0], self.sets[s.0])
         };
 
         let (mut s_set, s_len) = std::mem::take(&mut self.classes[s_idx]);
@@ -124,7 +140,7 @@ mod tests {
                     DisjointSet::no_rule,
                 );
             }
-            println!("{items:?}");
+            println!("{set}");
             w_size *= 2;
         }
 

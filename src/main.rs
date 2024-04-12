@@ -4,6 +4,7 @@ use program::Enviroment;
 
 mod disjoint_set;
 mod eval;
+mod exprgraph;
 mod parser;
 mod program;
 
