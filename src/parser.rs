@@ -1,6 +1,6 @@
-use std::{fmt::Display, rc::Rc};
+use std::{collections::VecDeque, fmt::Display, rc::Rc};
 
-use crate::program::{Clause, Enviroment, Expr, IdentKind, Program};
+use crate::program::{Clause, Enviroment, Expr, IdentKind, Program, Task};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Loc {
@@ -177,97 +177,6 @@ pub enum ParseErrorKind {
     RedeclIdent(String),
 }
 
-pub fn tokenize(s: impl IntoIterator<Item = char>) -> Result<TokenStream, ParseError> {
-    let mut toks = vec![];
-
-    let mut state = 0;
-    let mut ident = String::new();
-
-    let mut loc = Loc::start();
-    'OUTER: for c in s {
-        if c == '\n' {
-            loc.inc_line();
-        }
-        loc.inc_col();
-
-        loop {
-            match (state, c) {
-                (0, '<') => state = 1,
-                (1, '-') => {
-                    state = 0;
-                    toks.push(Some(Token::Arrow(loc)));
-                }
-                (1, '=') => {
-                    state = 0;
-                    toks.push(Some(Token::Le(loc)));
-                }
-                (1, _) => {
-                    state = 0;
-                    toks.push(Some(Token::Lt(loc)));
-                    continue;
-                }
-
-                (0, ';') => toks.push(Some(Token::Semi(loc))),
-                (0, ',') => toks.push(Some(Token::Coma(loc))),
-                (0, '(') => toks.push(Some(Token::Lp(loc))),
-                (0, ')') => toks.push(Some(Token::Rp(loc))),
-                (0, '?') => toks.push(Some(Token::Question(loc))),
-                (0, '\\') => toks.push(Some(Token::Backslash(loc))),
-                (0, '+') => toks.push(Some(Token::Plus(loc))),
-                (0, '-') => toks.push(Some(Token::Minus(loc))),
-                (0, '*') => toks.push(Some(Token::Star(loc))),
-                (0, '/') => toks.push(Some(Token::Div(loc))),
-                (0, '.') => toks.push(Some(Token::Dot(loc))),
-                (0, '=') => toks.push(Some(Token::Eq(loc))),
-
-                (0, '>') => state = 3,
-                (3, '=') => {
-                    state = 0;
-                    toks.push(Some(Token::Ge(loc)));
-                }
-                (3, _) => {
-                    state = 0;
-                    toks.push(Some(Token::Gt(loc)));
-                    continue;
-                }
-
-                (0, _) if c == '_' || ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) => {
-                    assert!(ident.is_empty());
-                    ident.push(c);
-                    state = 2;
-                }
-                (2, _)
-                    if c == '_'
-                        || ('a'..='z').contains(&c)
-                        || ('A'..='Z').contains(&c)
-                        || ('0'..='9').contains(&c) =>
-                {
-                    ident.push(c);
-                }
-                (2, _) => {
-                    if ident.starts_with('_') {
-                        toks.push(Some(Token::Const(std::mem::take(&mut ident), loc)));
-                    } else {
-                        toks.push(Some(Token::Var(std::mem::take(&mut ident), loc)));
-                    }
-                    state = 0;
-                    continue;
-                }
-                (0, _) if c.is_whitespace() => continue 'OUTER,
-                _ => {
-                    return Err(ParseError {
-                        loc,
-                        err: ParseErrorKind::InvalidToken,
-                    })
-                }
-            }
-            break;
-        }
-    }
-
-    Ok(TokenStream { index: 0, toks })
-}
-
 /*
 * PROGRAM -> CLAUSES TASK;
 * CLAUSES -> HORN ';' CLAUSES | ;
@@ -280,25 +189,130 @@ pub fn tokenize(s: impl IntoIterator<Item = char>) -> Result<TokenStream, ParseE
 * LHS -> var | const | func '(' EXPRS ');
 */
 
-pub struct TokenStream {
-    index: usize,
-    toks: Vec<Option<Token>>,
+pub struct TokenStream<I> {
+    buf: VecDeque<Token>,
+    it: I,
+    loc: Loc,
 }
 
-impl TokenStream {
-    pub fn eat_next(&mut self) -> Option<Token> {
-        self.index += 1;
-        self.toks.get_mut(self.index - 1).map(|t| t.take().unwrap())
+impl<I> TokenStream<I>
+where
+    I: Iterator<Item = char>,
+{
+    pub fn new(it: I) -> Self {
+        Self {
+            buf: VecDeque::new(),
+            it,
+            loc: Loc::start(),
+        }
+    }
+
+    fn eat_char(&mut self, state: &mut usize, ident: &mut String) -> Result<bool, ParseError> {
+        let c = if let Some(c) = self.it.next() {
+            c
+        } else {
+            return Ok(false);
+        };
+
+        if c == '\n' {
+            self.loc.inc_line();
+        }
+        self.loc.inc_col();
+        loop {
+            match (*state, c) {
+                (0, '<') => *state = 1,
+                (1, '-') => {
+                    *state = 0;
+                    self.buf.push_back(Token::Arrow(self.loc));
+                }
+                (1, '=') => {
+                    *state = 0;
+                    self.buf.push_back(Token::Le(self.loc));
+                }
+                (1, _) => {
+                    *state = 0;
+                    self.buf.push_back(Token::Lt(self.loc));
+                    continue;
+                }
+
+                (0, ';') => self.buf.push_back(Token::Semi(self.loc)),
+                (0, ',') => self.buf.push_back(Token::Coma(self.loc)),
+                (0, '(') => self.buf.push_back(Token::Lp(self.loc)),
+                (0, ')') => self.buf.push_back(Token::Rp(self.loc)),
+                (0, '?') => self.buf.push_back(Token::Question(self.loc)),
+                (0, '\\') => self.buf.push_back(Token::Backslash(self.loc)),
+                (0, '+') => self.buf.push_back(Token::Plus(self.loc)),
+                (0, '-') => self.buf.push_back(Token::Minus(self.loc)),
+                (0, '*') => self.buf.push_back(Token::Star(self.loc)),
+                (0, '/') => self.buf.push_back(Token::Div(self.loc)),
+                (0, '.') => self.buf.push_back(Token::Dot(self.loc)),
+                (0, '=') => self.buf.push_back(Token::Eq(self.loc)),
+
+                (0, '>') => *state = 3,
+                (3, '=') => {
+                    *state = 0;
+                    self.buf.push_back(Token::Ge(self.loc));
+                }
+                (3, _) => {
+                    *state = 0;
+                    self.buf.push_back(Token::Gt(self.loc));
+                    continue;
+                }
+
+                (0, _) if c == '_' || ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) => {
+                    assert!(ident.is_empty());
+                    ident.push(c);
+                    *state = 2;
+                }
+                (2, _)
+                    if c == '_'
+                        || ('a'..='z').contains(&c)
+                        || ('A'..='Z').contains(&c)
+                        || ('0'..='9').contains(&c) =>
+                {
+                    ident.push(c);
+                }
+                (2, _) => {
+                    if ident.starts_with('_') {
+                        self.buf
+                            .push_back(Token::Const(std::mem::take(ident), self.loc));
+                    } else {
+                        self.buf
+                            .push_back(Token::Var(std::mem::take(ident), self.loc));
+                    }
+                    *state = 0;
+                    continue;
+                }
+                (0, _) if c.is_whitespace() => break,
+                _ => {
+                    return Err(ParseError {
+                        loc: self.loc,
+                        err: ParseErrorKind::InvalidToken,
+                    })
+                }
+            }
+            break;
+        }
+
+        Ok(true)
+    }
+
+    pub fn eat_next(&mut self) -> Result<Option<Token>, ParseError> {
+        let mut ident = String::new();
+        let mut state = 0;
+        while self.buf.len() < 2 {
+            if !self.eat_char(&mut state, &mut ident)? {
+                break;
+            }
+        }
+        Ok(self.buf.pop_front())
     }
     pub fn peek_next(&self) -> Option<&Token> {
-        self.toks.get(self.index).map(|t| t.as_ref().unwrap())
-    }
-    pub fn is_empty(&self) -> bool {
-        self.index >= self.toks.len()
+        self.buf.front()
     }
 
     pub fn eat_expect_any(&mut self, opts: &[TokenType]) -> Result<Token, ParseError> {
-        let t = self.eat_next().ok_or(ParseError {
+        let t = self.eat_next()?.ok_or(ParseError {
             loc: Loc::End,
             err: ParseErrorKind::UnexpectedEnd,
         })?;
@@ -329,7 +343,28 @@ impl TokenStream {
     }
 }
 
-pub fn parse(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Program, ParseError> {
+impl Program {
+    pub fn parse<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Self, ParseError>
+    where
+        I: Iterator<Item = char>,
+    {
+        parse_prog(toks, env)
+    }
+}
+
+impl Task {
+    pub fn parse<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Self, ParseError>
+    where
+        I: Iterator<Item = char>,
+    {
+        Ok(Self::new(parse_task(toks, env)?))
+    }
+}
+
+fn parse_prog<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Program, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     let mut clauses = vec![];
     loop {
         clauses.push(parse_clause(toks, env)?);
@@ -339,12 +374,13 @@ pub fn parse(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Program, Pa
         }
     }
 
-    let task = parse_task(toks, env)?;
-
-    Ok(Program::new(clauses, task))
+    Ok(Program::new(clauses))
 }
 
-fn parse_clause(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Clause, ParseError> {
+fn parse_clause<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Clause, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     let lhs = parse_expr(toks, env)?;
     toks.eat_expect_any(&[TokenType::Arrow])?;
 
@@ -366,7 +402,10 @@ fn parse_clause(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Clause, 
     Ok(Clause::new(lhs, rhs))
 }
 
-fn parse_task(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Vec<Expr>, ParseError> {
+fn parse_task<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Vec<Expr>, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     toks.eat_expect_any(&[TokenType::Question])?;
 
     let mut res = vec![];
@@ -382,7 +421,10 @@ fn parse_task(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Vec<Expr>,
     Ok(res)
 }
 
-fn parse_expr(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, ParseError> {
+fn parse_expr<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Expr, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     let lhs = parse_lhs(toks, env)?;
     let expr = if let Some((op, rhs)) = parse_rhs(toks, env)? {
         Expr::Func(op, vec![lhs, rhs].into())
@@ -393,7 +435,10 @@ fn parse_expr(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, Pars
     Ok(expr)
 }
 
-fn parse_lhs(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, ParseError> {
+fn parse_lhs<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Expr, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     let tok = toks.eat_expect_any(&[TokenType::Var, TokenType::Const, TokenType::Lp])?;
 
     if tok.get_type() == TokenType::Lp {
@@ -421,10 +466,13 @@ fn parse_lhs(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, Parse
     }
 }
 
-fn parse_rhs(
-    toks: &mut TokenStream,
+fn parse_rhs<I>(
+    toks: &mut TokenStream<I>,
     env: &mut Enviroment,
-) -> Result<Option<(usize, Expr)>, ParseError> {
+) -> Result<Option<(usize, Expr)>, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     if let Some(binop) = toks
         .peek_expect_any(&[
             TokenType::Backslash,
@@ -442,7 +490,10 @@ fn parse_rhs(
         ])
         .ok()
     {
-        let binop = toks.eat_next().expect("We already peeked it?");
+        let binop = toks
+            .eat_next()
+            .expect("We already peeked it?")
+            .expect("again");
 
         let op_name = if binop.get_type() == TokenType::Backslash {
             let ident = toks.eat_expect_any(&[TokenType::Var, TokenType::Const])?;
@@ -499,7 +550,10 @@ fn add_ident(
     }
 }
 
-fn parse_args(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Vec<Expr>, ParseError> {
+fn parse_args<I>(toks: &mut TokenStream<I>, env: &mut Enviroment) -> Result<Vec<Expr>, ParseError>
+where
+    I: Iterator<Item = char>,
+{
     toks.eat_expect_any(&[TokenType::Lp])?;
 
     let mut res = vec![];

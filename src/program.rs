@@ -42,23 +42,32 @@ impl Clause {
 #[derive(Debug)]
 pub struct Program {
     clauses: Rc<[Clause]>,
-    task: Rc<[Expr]>,
 }
 
 impl Program {
-    pub fn new(clauses: Vec<Clause>, task: Vec<Expr>) -> Self {
+    pub fn new(clauses: Vec<Clause>) -> Self {
         Self {
             clauses: clauses.into(),
-            task: task.into(),
         }
     }
 
-    pub fn clauses(&self) -> impl Iterator<Item = (usize, Clause)> + '_ {
-        self.clauses.iter().cloned().enumerate()
+    pub fn clauses(&self) -> impl Iterator<Item = Clause> + '_ {
+        self.clauses.iter().cloned()
+    }
+}
+
+#[derive(Debug)]
+pub struct Task {
+    task: Rc<[Expr]>,
+}
+
+impl Task {
+    pub fn new(task: Vec<Expr>) -> Self {
+        Self { task: task.into() }
     }
 
-    pub fn tasks(&self) -> impl Iterator<Item = (usize, Expr)> + '_ {
-        self.task.iter().cloned().enumerate()
+    pub fn exprs(&self) -> impl Iterator<Item = Expr> + '_ {
+        self.task.iter().cloned()
     }
 }
 
