@@ -9,16 +9,14 @@ mod program;
 
 fn main() {
     let src = "
-path(X, X, _) <-;
-path(X, Y, list(list(X, Y), _)) <- edge(X, Y);
-path(X, Y, list(list(X, Z), L)) <- edge(X, Z), path(Z, Y, L);
-
-edge(_1, _2) <-;
-edge(_1, _3) <-;
-edge(_3, _4) <-;
-? path(_1, X, P);
-";
-
+    concat(_, Y, Y) <- ;
+    concat(X.Y, L, X.Z) <- concat(Y, L, Z);
+    rev(_, A, A) <-;
+    rev(X.Y, A, B) <- concat(X._, A, C), rev(Y, C, B);
+    reverse(X, Y) <- rev(X, _, Y);
+    ? reverse(_a._b_._c._, X);
+    ";
+    println!("{src}");
     let mut toks = tokenize(src.chars()).unwrap();
     let mut env = Enviroment::new();
     let prog = parse(&mut toks, &mut env).unwrap();

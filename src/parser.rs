@@ -42,6 +42,18 @@ pub enum Token {
     Rp(Loc),
     Var(String, Loc),
     Const(String, Loc),
+    Backslash(Loc),
+    Dot(Loc),
+    Plus(Loc),
+    Minus(Loc),
+    Star(Loc),
+    Div(Loc),
+    Eq(Loc),
+    Neq(Loc),
+    Gt(Loc),
+    Ge(Loc),
+    Lt(Loc),
+    Le(Loc),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -54,6 +66,18 @@ pub enum TokenType {
     Rp,
     Var,
     Const,
+    Backslash,
+    Dot,
+    Plus,
+    Minus,
+    Star,
+    Div,
+    Eq,
+    Neq,
+    Gt,
+    Ge,
+    Lt,
+    Le,
 }
 
 impl Token {
@@ -67,6 +91,18 @@ impl Token {
             Token::Rp(a) => *a,
             Token::Var(_, a) => *a,
             Token::Const(_, a) => *a,
+            Token::Backslash(a) => *a,
+            Token::Dot(a) => *a,
+            Token::Plus(a) => *a,
+            Token::Minus(a) => *a,
+            Token::Star(a) => *a,
+            Token::Div(a) => *a,
+            Token::Eq(a) => *a,
+            Token::Neq(a) => *a,
+            Token::Gt(a) => *a,
+            Token::Ge(a) => *a,
+            Token::Lt(a) => *a,
+            Token::Le(a) => *a,
         }
     }
     pub fn get_type(&self) -> TokenType {
@@ -79,6 +115,18 @@ impl Token {
             Token::Rp(_) => TokenType::Rp,
             Token::Var(_, _) => TokenType::Var,
             Token::Const(_, _) => TokenType::Const,
+            Token::Backslash(_) => TokenType::Backslash,
+            Token::Dot(_) => TokenType::Dot,
+            Token::Plus(_) => TokenType::Plus,
+            Token::Minus(_) => TokenType::Minus,
+            Token::Star(_) => TokenType::Star,
+            Token::Div(_) => TokenType::Div,
+            Token::Eq(_) => TokenType::Eq,
+            Token::Neq(_) => TokenType::Neq,
+            Token::Gt(_) => TokenType::Gt,
+            Token::Ge(_) => TokenType::Ge,
+            Token::Lt(_) => TokenType::Lt,
+            Token::Le(_) => TokenType::Le,
         }
     }
 
@@ -136,92 +184,84 @@ pub fn tokenize(s: impl IntoIterator<Item = char>) -> Result<TokenStream, ParseE
     let mut ident = String::new();
 
     let mut loc = Loc::start();
-    for c in s {
+    'OUTER: for c in s {
         if c == '\n' {
             loc.inc_line();
         }
         loc.inc_col();
 
-        match (state, c) {
-            (0, '<') => {
-                state = 1;
-            }
-            (1, '-') => {
-                state = 0;
-                toks.push(Some(Token::Arrow(loc)));
-            }
-            (0, ';') => {
-                toks.push(Some(Token::Semi(loc)));
-            }
-            (0, ',') => {
-                toks.push(Some(Token::Coma(loc)));
-            }
-            (0, '(') => {
-                toks.push(Some(Token::Lp(loc)));
-            }
-            (0, ')') => {
-                toks.push(Some(Token::Rp(loc)));
-            }
-            (0, '?') => {
-                toks.push(Some(Token::Question(loc)));
-            }
-            (0, _) if c == '_' || ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) => {
-                assert!(ident.is_empty());
-                ident.push(c);
-                state = 2;
-            }
-            (2, _)
-                if c == '_'
-                    || ('a'..='z').contains(&c)
-                    || ('A'..='Z').contains(&c)
-                    || ('0'..='9').contains(&c) =>
-            {
-                ident.push(c);
-            }
-            (2, _)
-                if c == '<'
-                    || c == ','
-                    || c == '('
-                    || c == ')'
-                    || c == '?'
-                    || c.is_whitespace() =>
-            {
-                if ident.starts_with('_') {
-                    toks.push(Some(Token::Const(std::mem::take(&mut ident), loc)));
-                } else {
-                    toks.push(Some(Token::Var(std::mem::take(&mut ident), loc)));
+        loop {
+            match (state, c) {
+                (0, '<') => state = 1,
+                (1, '-') => {
+                    state = 0;
+                    toks.push(Some(Token::Arrow(loc)));
+                }
+                (1, '=') => {
+                    state = 0;
+                    toks.push(Some(Token::Le(loc)));
+                }
+                (1, _) => {
+                    state = 0;
+                    toks.push(Some(Token::Lt(loc)));
+                    continue;
                 }
 
-                match c {
-                    '<' => {
-                        state = 1;
+                (0, ';') => toks.push(Some(Token::Semi(loc))),
+                (0, ',') => toks.push(Some(Token::Coma(loc))),
+                (0, '(') => toks.push(Some(Token::Lp(loc))),
+                (0, ')') => toks.push(Some(Token::Rp(loc))),
+                (0, '?') => toks.push(Some(Token::Question(loc))),
+                (0, '\\') => toks.push(Some(Token::Backslash(loc))),
+                (0, '+') => toks.push(Some(Token::Plus(loc))),
+                (0, '-') => toks.push(Some(Token::Minus(loc))),
+                (0, '*') => toks.push(Some(Token::Star(loc))),
+                (0, '/') => toks.push(Some(Token::Div(loc))),
+                (0, '.') => toks.push(Some(Token::Dot(loc))),
+                (0, '=') => toks.push(Some(Token::Eq(loc))),
+
+                (0, '>') => state = 3,
+                (3, '=') => {
+                    state = 0;
+                    toks.push(Some(Token::Ge(loc)));
+                }
+                (3, _) => {
+                    state = 0;
+                    toks.push(Some(Token::Gt(loc)));
+                    continue;
+                }
+
+                (0, _) if c == '_' || ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) => {
+                    assert!(ident.is_empty());
+                    ident.push(c);
+                    state = 2;
+                }
+                (2, _)
+                    if c == '_'
+                        || ('a'..='z').contains(&c)
+                        || ('A'..='Z').contains(&c)
+                        || ('0'..='9').contains(&c) =>
+                {
+                    ident.push(c);
+                }
+                (2, _) => {
+                    if ident.starts_with('_') {
+                        toks.push(Some(Token::Const(std::mem::take(&mut ident), loc)));
+                    } else {
+                        toks.push(Some(Token::Var(std::mem::take(&mut ident), loc)));
                     }
-                    ',' => {
-                        toks.push(Some(Token::Coma(loc)));
-                        state = 0;
-                    }
-                    '(' => {
-                        toks.push(Some(Token::Lp(loc)));
-                        state = 0;
-                    }
-                    ')' => {
-                        toks.push(Some(Token::Rp(loc)));
-                        state = 0;
-                    }
-                    '?' => {
-                        toks.push(Some(Token::Question(loc)));
-                        state = 0;
-                    }
-                    _ => (),
+                    state = 0;
+                    continue;
+                }
+                (0, _) if c.is_whitespace() => continue 'OUTER,
+                _ => {
+                    return Err(ParseError {
+                        loc,
+                        err: ParseErrorKind::InvalidToken,
+                    })
                 }
             }
-            (0, _) if c.is_whitespace() => continue,
-            _ => {
-                return Err(ParseError {
-                    loc,
-                    err: ParseErrorKind::InvalidToken,
-                })
-            }
+            break;
         }
     }
 
@@ -234,9 +274,10 @@ pub fn tokenize(s: impl IntoIterator<Item = char>) -> Result<TokenStream, ParseE
 * HORN -> EXPR '<-' EXPRS;
 * EXPRS -> EXPR ',' EXPRS | ;
 * TASK -> '?' EXPRS;
-* EXPR -> VAR | CONST | VAR '(' EXPRS ');
-* CONST -> '_' VAR;
-* VAR -> ([a-z] | [A-Z]) ('_' | [a-z] | [A-Z] | [0-9])*;
+* EXPR -> LHS RHS;
+* RHS -> BINOP LHS RHS | ;
+* BINOP -> '\' func | dot | plus | minus | ...;
+* LHS -> var | const | func '(' EXPRS ');
 */
 
 pub struct TokenStream {
@@ -258,6 +299,21 @@ impl TokenStream {
 
     pub fn eat_expect_any(&mut self, opts: &[TokenType]) -> Result<Token, ParseError> {
         let t = self.eat_next().ok_or(ParseError {
+            loc: Loc::End,
+            err: ParseErrorKind::UnexpectedEnd,
+        })?;
+
+        if opts.contains(&t.get_type()) {
+            Ok(t)
+        } else {
+            Err(ParseError {
+                loc: t.get_loc(),
+                err: ParseErrorKind::ExpectedAny(opts.to_vec().into(), t.get_type()),
+            })
+        }
+    }
+    pub fn peek_expect_any(&self, opts: &[TokenType]) -> Result<&Token, ParseError> {
+        let t = self.peek_next().ok_or(ParseError {
             loc: Loc::End,
             err: ParseErrorKind::UnexpectedEnd,
         })?;
@@ -327,6 +383,17 @@ fn parse_task(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Vec<Expr>,
 }
 
 fn parse_expr(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, ParseError> {
+    let lhs = parse_lhs(toks, env)?;
+    let expr = if let Some((op, rhs)) = parse_rhs(toks, env)? {
+        Expr::Func(op, vec![lhs, rhs].into())
+    } else {
+        lhs
+    };
+
+    Ok(expr)
+}
+
+fn parse_lhs(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, ParseError> {
     let tok = toks.eat_expect_any(&[TokenType::Var, TokenType::Const])?;
 
     if let Some(Token::Lp(_)) = toks.peek_next() {
@@ -345,6 +412,63 @@ fn parse_expr(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, Pars
         Token::Var(s, l) => Ok(Expr::Var(add_ident(env, s, IdentKind::Var, l)?)),
         Token::Const(s, l) => Ok(Expr::Const(add_ident(env, s, IdentKind::Const, l)?)),
         _ => panic!("Unreached"),
+    }
+}
+
+fn parse_rhs(
+    toks: &mut TokenStream,
+    env: &mut Enviroment,
+) -> Result<Option<(usize, Expr)>, ParseError> {
+    if let Some(binop) = toks
+        .peek_expect_any(&[
+            TokenType::Backslash,
+            TokenType::Dot,
+            TokenType::Plus,
+            TokenType::Minus,
+            TokenType::Star,
+            TokenType::Div,
+            TokenType::Eq,
+            TokenType::Neq,
+            TokenType::Gt,
+            TokenType::Ge,
+            TokenType::Lt,
+            TokenType::Le,
+        ])
+        .ok()
+    {
+        let binop = toks.eat_next().expect("We already peeked it?");
+
+        let op_name = if binop.get_type() == TokenType::Backslash {
+            let ident = toks.eat_expect_any(&[TokenType::Var, TokenType::Const])?;
+            ident.as_ident().expect("Is a var or a const")
+        } else {
+            match binop {
+                Token::Dot(_) => ".".to_string(),
+                Token::Plus(_) => "+".to_string(),
+                Token::Minus(_) => "-".to_string(),
+                Token::Star(_) => "*".to_string(),
+                Token::Div(_) => "/".to_string(),
+                Token::Eq(_) => "=".to_string(),
+                Token::Neq(_) => "!=".to_string(),
+                Token::Gt(_) => ">".to_string(),
+                Token::Ge(_) => ">=".to_string(),
+                Token::Lt(_) => "<".to_string(),
+                Token::Le(_) => "<=".to_string(),
+                _ => panic!("Unreachable"),
+            }
+        };
+
+        let id = add_ident(env, op_name, IdentKind::Func(2), binop.get_loc())?;
+        let rhs = parse_lhs(toks, env)?;
+        let full_rhs = if let Some((next_op, next_expr)) = parse_rhs(toks, env)? {
+            Expr::Func(next_op, vec![rhs, next_expr].into())
+        } else {
+            rhs
+        };
+
+        Ok(Some((id, full_rhs)))
+    } else {
+        Ok(None)
     }
 }
 

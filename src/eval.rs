@@ -51,7 +51,7 @@ impl Evaluator {
 
                 if task.is_empty() {
                     self.print_res(&subs);
-                    println!("===============");
+                    println!("=======SUCCESS========");
                 } else {
                     stack.push((d + 1, subs, 0, task));
                 }
