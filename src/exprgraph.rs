@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, rc::Rc};
 
 use crate::{
     disjoint_set::{DisjointSet, SetItem},
@@ -10,16 +10,33 @@ pub struct Id(usize);
 
 #[derive(Default, Debug, Clone)]
 pub struct ExprGraph {
-    set: DisjointSet<usize>,                       // classes of nodes
-    chidren: Vec<Vec<SetItem>>,                    // chlidren[node]: classes of children
-    parent: HashMap<(usize, Vec<SetItem>), usize>, // parent[ident, children]: node
-    nodes: Vec<(usize, IdentKind, SetItem)>,       // nodes[node]: (ident, identKind, class)
-    leaves: HashMap<usize, usize>,                 // leaves[ident]: node,
+    set: DisjointSet<usize>,                        // classes of nodes
+    chidren: Vec<Rc<[SetItem]>>,                    // chlidren[node]: classes of children
+    parent: HashMap<(usize, Rc<[SetItem]>), usize>, // parent[ident, children]: node
+    nodes: Vec<(usize, IdentKind, SetItem)>,        // nodes[node]: (ident, identKind, class)
+    leaves: HashMap<usize, usize>,                  // leaves[ident]: node,
 }
 
 impl ExprGraph {
     pub fn new() -> Self {
         Default::default()
+    }
+
+    pub fn get_expr_id(&self, expr: &Expr) -> Option<Id> {
+        match expr {
+            Expr::Var(ident) | Expr::Const(ident) => self.leaves.get(ident).cloned().map(Id),
+            Expr::Func(ident, args) => {
+                let mut children = vec![];
+                for arg in args.iter() {
+                    let child_node = self.get_expr_id(arg)?;
+                    let child_class = self.set.find(self.nodes[child_node.0].2).unwrap();
+                    children.push(child_class);
+                }
+
+                let children: Rc<[SetItem]> = children.into();
+                self.parent.get(&(*ident, children)).cloned().map(Id)
+            }
+        }
     }
 
     pub fn add_expr(&mut self, expr: &Expr) -> Id {
@@ -28,7 +45,7 @@ impl ExprGraph {
                 Some(node) => Id(*node),
                 None => {
                     let node = self.nodes.len();
-                    self.chidren.push(vec![]);
+                    self.chidren.push(vec![].into());
                     let class = self.set.add_set(node);
                     self.nodes.push((
                         *ident,
@@ -51,6 +68,7 @@ impl ExprGraph {
                     children.push(child_class);
                 }
 
+                let children: Rc<[SetItem]> = children.into();
                 let node = *self
                     .parent
                     .entry((*ident, children.clone()))
@@ -151,7 +169,7 @@ impl ExprGraph {
                     .clone()
                     .into_iter()
                     .zip(self.chidren[t_node].clone().into_iter())
-                    .all(|(s, t)| self.unify_rec(s, t))
+                    .all(|(s, t)| self.unify_rec(*s, *t))
             }
         }
     }
@@ -170,7 +188,7 @@ impl ExprGraph {
             IdentKind::Var => Expr::Var(ident),
             IdentKind::Func(_) => {
                 let mut args = vec![];
-                for child_class in &self.chidren[*node] {
+                for child_class in self.chidren[*node].iter() {
                     args.push(self.get_expr_rec(*child_class));
                 }
 

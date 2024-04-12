@@ -394,7 +394,13 @@ fn parse_expr(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, Pars
 }
 
 fn parse_lhs(toks: &mut TokenStream, env: &mut Enviroment) -> Result<Expr, ParseError> {
-    let tok = toks.eat_expect_any(&[TokenType::Var, TokenType::Const])?;
+    let tok = toks.eat_expect_any(&[TokenType::Var, TokenType::Const, TokenType::Lp])?;
+
+    if tok.get_type() == TokenType::Lp {
+        let expr = parse_expr(toks, env)?;
+        toks.eat_expect_any(&[TokenType::Rp])?;
+        return Ok(expr);
+    }
 
     if let Some(Token::Lp(_)) = toks.peek_next() {
         let args = parse_args(toks, env)?;
