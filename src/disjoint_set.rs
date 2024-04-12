@@ -33,15 +33,6 @@ where
 }
 
 impl<T> DisjointSet<T> {
-    pub fn new() -> Self {
-        Self {
-            classes: Default::default(),
-            sets: Default::default(),
-            items: Default::default(),
-            vacant: Default::default(),
-        }
-    }
-
     pub fn add_set(&mut self, val: T) -> SetItem {
         let set_idx = if let Some(idx) = self.vacant.pop_front() {
             idx
@@ -102,7 +93,7 @@ impl<T> DisjointSet<T> {
         self.vacant.push_back(t_idx);
     }
 
-    pub fn no_rule(a: &T, b: &T) -> u8 {
+    pub fn no_rule(_a: &T, _b: &T) -> u8 {
         0
     }
 
@@ -125,7 +116,7 @@ mod tests {
 
     #[test]
     fn merge_all() {
-        let mut set = DisjointSet::new();
+        let mut set = DisjointSet::default();
         let mut items = vec![];
         for i in 0..20 {
             items.push(set.add_set(i));

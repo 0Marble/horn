@@ -9,7 +9,7 @@ use crate::{
 pub struct Id(usize);
 
 #[derive(Default, Debug, Clone)]
-pub struct ExprGraph {
+pub struct Unifier {
     set: DisjointSet<usize>,                        // classes of nodes
     chidren: Vec<Rc<[SetItem]>>,                    // chlidren[node]: classes of children
     parent: HashMap<(usize, Rc<[SetItem]>), usize>, // parent[ident, children]: node
@@ -17,11 +17,7 @@ pub struct ExprGraph {
     leaves: HashMap<usize, usize>,                  // leaves[ident]: node,
 }
 
-impl ExprGraph {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
+impl Unifier {
     pub fn get_expr_id(&self, expr: &Expr) -> Option<Id> {
         match expr {
             Expr::Var(ident) | Expr::Const(ident) => self.leaves.get(ident).cloned().map(Id),
@@ -96,7 +92,7 @@ impl ExprGraph {
     pub fn unify(&mut self, expr1: Id, expr2: Id) -> bool {
         let e1_class = self.nodes[expr1.0].2;
         let e2_class = self.nodes[expr2.0].2;
-        let mut uni = Self::new();
+        let mut uni = Self::default();
         let a = uni.add_expr(&self.get_expr_rec(e1_class));
         let b = uni.add_expr(&self.get_expr_rec(e2_class));
         if !uni.unify_rec(uni.nodes[a.0].2, uni.nodes[b.0].2) {
@@ -204,22 +200,22 @@ mod tests {
 
     #[test]
     fn same_expr() {
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let e1 = uni.add_expr(&Expr::Var(0));
         let e2 = uni.add_expr(&Expr::Var(0));
         assert_eq!(e1, e2);
 
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let e1 = uni.add_expr(&Expr::Const(0));
         let e2 = uni.add_expr(&Expr::Const(0));
         assert_eq!(e1, e2);
 
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let e1 = uni.add_expr(&Expr::Func(0, vec![Expr::Var(1), Expr::Const(2)].into()));
         let e2 = uni.add_expr(&Expr::Func(0, vec![Expr::Var(1), Expr::Const(2)].into()));
         assert_eq!(e1, e2);
 
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let e1 = uni.add_expr(&Expr::Func(
             0,
             vec![
@@ -241,7 +237,7 @@ mod tests {
 
     #[test]
     fn unify() {
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let e1 = uni.add_expr(&Expr::Var(0));
         let e2 = uni.add_expr(&Expr::Const(1));
         assert_ne!(e1, e2);
@@ -249,7 +245,7 @@ mod tests {
         assert_eq!(uni.get_expr(e1), Expr::Const(1));
         assert_eq!(uni.get_expr(e2), Expr::Const(1));
 
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let a = Expr::Var(0);
         let b = Expr::Func(1, vec![Expr::Var(2), Expr::Const(3)].into());
         let c = Expr::Func(1, vec![Expr::Var(2), Expr::Const(3)].into());
@@ -260,7 +256,7 @@ mod tests {
         assert_eq!(uni.get_expr(e1), c);
         assert_eq!(uni.get_expr(e2), c);
 
-        let mut uni = ExprGraph::new();
+        let mut uni = Unifier::default();
         let a = Expr::Func(0, vec![Expr::Const(1), Expr::Var(4)].into());
         let b = Expr::Func(0, vec![Expr::Var(3), Expr::Const(2)].into());
         let c = Expr::Func(0, vec![Expr::Const(1), Expr::Const(2)].into());

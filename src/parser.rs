@@ -130,14 +130,6 @@ impl Token {
         }
     }
 
-    fn get_ident(&self) -> Option<&str> {
-        match self {
-            Token::Var(s, _) => Some(s),
-            Token::Const(s, _) => Some(s),
-            _ => None,
-        }
-    }
-
     fn as_ident(self) -> Option<String> {
         match self {
             Token::Var(s, _) => Some(s),
@@ -257,6 +249,12 @@ where
                     *state = 0;
                     self.buf.push_back(Token::Gt(self.loc));
                     continue;
+                }
+
+                (0, '!') => *state = 4,
+                (4, '=') => {
+                    *state = 0;
+                    self.buf.push_back(Token::Neq(self.loc));
                 }
 
                 (0, _) if c == '_' || ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) => {
@@ -386,7 +384,7 @@ where
 
     let mut rhs = vec![];
     if let Some(Token::Semi(_)) = toks.peek_next() {
-        toks.eat_next();
+        toks.eat_next().expect("Just peeked");
         return Ok(Clause::new(lhs, rhs));
     }
 
@@ -473,7 +471,7 @@ fn parse_rhs<I>(
 where
     I: Iterator<Item = char>,
 {
-    if let Some(binop) = toks
+    if let Some(_) = toks
         .peek_expect_any(&[
             TokenType::Backslash,
             TokenType::Dot,

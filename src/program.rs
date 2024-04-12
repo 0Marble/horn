@@ -1,19 +1,16 @@
-use std::{collections::HashMap, fmt::Debug, rc::Rc};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Debug,
+    rc::Rc,
+};
+
+use crate::unifier::Unifier;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Expr {
     Var(usize),
     Const(usize),
     Func(usize, Rc<[Expr]>),
-}
-impl Expr {
-    pub fn top_ident(&self) -> usize {
-        match self {
-            Expr::Var(i) => *i,
-            Expr::Const(i) => *i,
-            Expr::Func(i, _) => *i,
-        }
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -69,6 +66,45 @@ impl Task {
     pub fn exprs(&self) -> impl Iterator<Item = Expr> + '_ {
         self.task.iter().cloned()
     }
+
+    pub fn print(&self, env: &Enviroment, uni: &Unifier) {
+        let mut set = HashSet::new();
+
+        for e in self.exprs() {
+            self.get_vars(&e, &mut set);
+        }
+
+        for e in set {
+            self.print_expr(&Expr::Var(e), env);
+            print!(" = ");
+            let id = uni.get_expr_id(&Expr::Var(e)).unwrap();
+            self.print_expr(&uni.get_expr(id), env);
+            println!();
+        }
+    }
+    fn print_expr(&self, e: &Expr, env: &Enviroment) {
+        match e {
+            Expr::Var(x) => print!("{}", env.get_ident_name(*x).unwrap()),
+            Expr::Const(c) => print!("{}", env.get_ident_name(*c).unwrap()),
+            Expr::Func(f, args) => {
+                print!("{}(", env.get_ident_name(*f).unwrap());
+                self.print_expr(&args[0], env);
+                for i in 1..args.len() {
+                    print!(", ");
+                    self.print_expr(&args[i], env);
+                }
+                print!(")");
+            }
+        }
+    }
+
+    fn get_vars(&self, e: &Expr, set: &mut HashSet<usize>) {
+        match e {
+            Expr::Var(x) => _ = set.insert(*x),
+            Expr::Func(_, args) => args.iter().for_each(|e| self.get_vars(e, set)),
+            _ => (),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -106,33 +142,6 @@ impl Enviroment {
         self.inv_idents.insert(id, ident);
         self.kinds.insert(id, kind);
         id
-    }
-
-    pub fn rename_vars(&mut self, c: &Clause) -> Clause {
-        let mut names = HashMap::new();
-        let lhs = self.rename(c.lhs(), &mut names);
-        let mut rhs = vec![];
-        for e in c.rhs() {
-            rhs.push(self.rename(e, &mut names));
-        }
-        Clause::new(lhs, rhs)
-    }
-
-    fn rename(&mut self, e: Expr, names: &mut HashMap<usize, usize>) -> Expr {
-        match e {
-            Expr::Var(x) => Expr::Var(*names.entry(x).or_insert_with(|| {
-                self.next_id += 1;
-                self.next_id - 1
-            })),
-            Expr::Const(c) => Expr::Const(c),
-            Expr::Func(f, args) => Expr::Func(
-                f,
-                args.iter()
-                    .cloned()
-                    .map(|e| self.rename(e, names))
-                    .collect(),
-            ),
-        }
     }
 
     pub fn new() -> Self {

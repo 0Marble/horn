@@ -1,4 +1,3 @@
-use eval::Evaluator;
 use program::Enviroment;
 
 use crate::{
@@ -8,9 +7,9 @@ use crate::{
 
 mod disjoint_set;
 mod eval;
-mod exprgraph;
 mod parser;
 mod program;
+mod unifier;
 
 fn main() {
     let src = "
@@ -64,9 +63,15 @@ fn main() {
     let mut env = Enviroment::new();
     let prog = Program::parse(&mut toks, &mut env).unwrap();
 
-    let mut eval = Evaluator::new(prog);
-    eval.eval(500, &Task::parse(&mut toks, &mut env).unwrap(), &env)
-        .unwrap();
-    eval.eval(500, &Task::parse(&mut toks, &mut env).unwrap(), &env)
-        .unwrap();
+    let task = Task::parse(&mut toks, &mut env).unwrap();
+    for uni in prog.eval(&task, 500) {
+        task.print(&env, &uni.unwrap());
+        println!("========SUCCESS========");
+    }
+
+    let task = Task::parse(&mut toks, &mut env).unwrap();
+    for uni in prog.eval(&task, 500) {
+        task.print(&env, &uni.unwrap());
+        println!("========SUCCESS========");
+    }
 }
