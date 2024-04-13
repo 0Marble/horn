@@ -257,6 +257,10 @@ where
                     self.buf.push_back(Token::Neq(self.loc));
                 }
 
+                (0, '#') => *state = 5,
+                (5, '\n') => *state = 0,
+                (5, _) => (),
+
                 (0, _) if c == '_' || ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) => {
                     assert!(ident.is_empty());
                     ident.push(c);
@@ -281,7 +285,7 @@ where
                     *state = 0;
                     continue;
                 }
-                (0, _) if c.is_whitespace() => break,
+                (0, _) if c.is_whitespace() => (),
                 _ => {
                     return Err(ParseError {
                         loc: self.loc,
@@ -368,6 +372,9 @@ where
         clauses.push(parse_clause(toks, env)?);
 
         if let Some(Token::Question(_)) = toks.peek_next() {
+            break;
+        }
+        if toks.peek_next().is_none() {
             break;
         }
     }

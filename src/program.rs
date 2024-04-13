@@ -1,16 +1,33 @@
 use std::{
     collections::{HashMap, HashSet},
     fmt::Debug,
+    io::Write,
     rc::Rc,
 };
-
-use crate::unifier::Unifier;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Expr {
     Var(usize),
     Const(usize),
     Func(usize, Rc<[Expr]>),
+}
+
+impl Expr {
+    pub fn print(&self, w: &mut dyn Write, env: &Enviroment) -> std::io::Result<()> {
+        match self {
+            Expr::Var(x) => write!(w, "{}", env.get_ident_name(*x).unwrap()),
+            Expr::Const(c) => write!(w, "{}", env.get_ident_name(*c).unwrap()),
+            Expr::Func(f, args) => {
+                write!(w, "{}(", env.get_ident_name(*f).unwrap())?;
+                args[0].print(w, env)?;
+                for i in 1..args.len() {
+                    write!(w, ", ")?;
+                    args[i].print(w, env)?;
+                }
+                write!(w, ")")
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -65,37 +82,6 @@ impl Task {
 
     pub fn exprs(&self) -> impl Iterator<Item = Expr> + '_ {
         self.task.iter().cloned()
-    }
-
-    pub fn print(&self, env: &Enviroment, uni: &Unifier) {
-        let mut set = HashSet::new();
-
-        for e in self.exprs() {
-            self.get_vars(&e, &mut set);
-        }
-
-        for e in set {
-            self.print_expr(&Expr::Var(e), env);
-            print!(" = ");
-            let id = uni.get_expr_id(&Expr::Var(e)).unwrap();
-            self.print_expr(&uni.get_expr(id), env);
-            println!();
-        }
-    }
-    fn print_expr(&self, e: &Expr, env: &Enviroment) {
-        match e {
-            Expr::Var(x) => print!("{}", env.get_ident_name(*x).unwrap()),
-            Expr::Const(c) => print!("{}", env.get_ident_name(*c).unwrap()),
-            Expr::Func(f, args) => {
-                print!("{}(", env.get_ident_name(*f).unwrap());
-                self.print_expr(&args[0], env);
-                for i in 1..args.len() {
-                    print!(", ");
-                    self.print_expr(&args[i], env);
-                }
-                print!(")");
-            }
-        }
     }
 
     fn get_vars(&self, e: &Expr, set: &mut HashSet<usize>) {
