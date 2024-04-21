@@ -15,7 +15,10 @@ pub enum Expr {
 impl Expr {
     pub fn print(&self, w: &mut dyn Write, env: &Enviroment) -> std::io::Result<()> {
         match self {
-            Expr::Var(x) => write!(w, "{}", env.get_ident_name(*x).unwrap()),
+            Expr::Var(x) => {
+                let fallback = format!("X_{x}");
+                write!(w, "{}", env.get_ident_name(*x).unwrap_or(&fallback))
+            }
             Expr::Const(c) => write!(w, "{}", env.get_ident_name(*c).unwrap()),
             Expr::Func(f, args) => {
                 write!(w, "{}(", env.get_ident_name(*f).unwrap())?;
@@ -84,10 +87,15 @@ impl Task {
         self.task.iter().cloned()
     }
 
-    fn get_vars(&self, e: &Expr, set: &mut HashSet<usize>) {
+    pub fn get_vars(&self) -> impl Iterator<Item = usize> + '_ {
+        let mut set = HashSet::new();
+        self.exprs().for_each(|e| Self::find_vars(&e, &mut set));
+        set.into_iter()
+    }
+    fn find_vars(e: &Expr, set: &mut HashSet<usize>) {
         match e {
             Expr::Var(x) => _ = set.insert(*x),
-            Expr::Func(_, args) => args.iter().for_each(|e| self.get_vars(e, set)),
+            Expr::Func(_, args) => args.iter().for_each(|e| Self::find_vars(e, set)),
             _ => (),
         }
     }
